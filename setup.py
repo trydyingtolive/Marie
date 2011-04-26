@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from setuptools import setup, find_packages
+
 sdict = {
     'name' : 'Marie',
     'version' : '1.0',
@@ -12,7 +14,7 @@ sdict = {
     'maintainer_email' : 'trydyingtolive',
     'keywords' : ['Marie', 'WSGI', 'micro', 'framework', 'Redis', 'Mako'],
     'license' : 'GPLv3',
-    'packages' : ['marie'],
+    'packages' : find_packages(),
     'classifiers' : [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -21,10 +23,5 @@ sdict = {
         'Operating System :: OS Independent',
         'Programming Language :: Python'],
 }
-
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
     
 setup(**sdict)
