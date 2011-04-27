@@ -1,8 +1,4 @@
 Marie is a lightweight WSGI micro-framework in Python for building dynamic websites in a very pain free way.
-
-For more information on Marie visit:
-http://trydyingtolive.com/marie
-
 Marie was designed to:
 
     Be easy to use - Hello World in 5 lines, lots of goodies at your fingertips
@@ -10,21 +6,15 @@ Marie was designed to:
     Be fast - Keeping you as close to bare metal speed as possible
     Give you the tools you need - Cookies, headers, forms, no problem
     Have authorized sessions - With Redis a high speed key value database
-    Easily incorperate templates - With Mako a full featured templating language
+    Easily incorporate templates - With Mako a full featured templating language
     Be modifiable - Make it run the way you want
 
 The 5 lines of Hello World
-import marie
-def index(environ, name="World"):
-    return "Hello %s" % name
-marie.expose('/' index)
-marie.run()
-
-In this example we have created a function and exposed it to the root ('/') URL. If you were to visit http://localhost/ you would see "Hello World" and if you were to visit http://localhost/Marie you would see "Hello Marie"
-
+import marie def index(environ, name="World"): return "Hello %s" % name marie.expose('/', index) marie.run() In this example we have created a function and exposed it to the root ('/') URL. If you were to visit http://localhost/ you would see "Hello World" and if you were to visit http://localhost/Marie you would see "Hello Marie"
+Installing Marie
+Marie can be installed by using easy_install, pip or by simply using the marie.py file. There is also a windows binary file. ##EasyInstall easy_install marie ##Pip pip install marie
 The story behind Marie
-Some time ago while building a new dynamic website for a friend I was looking for a quick simple WSGI framework. At the time there weren't as many micro-frameworks, and the ones that did exist didn't match my needs. So I created Marie, and with each project I enahanced the code. Over time as I worked on more projects Marie began to become more usefull. Things that I kept doing over and over were added to the code and problems I kept running into were made easier to find. Other features to help move things along were also added. On April 26, 2011 Marie was released to the public in hopes that this framework will help others as much as it has helped me.
-
+Some time ago while building a new dynamic website for a friend I was looking for a quick simple WSGI framework. At the time there weren't as many micro-frameworks, and the ones that did exist didn't match my needs. So I created Marie, and with each project I enhanced the code. Over time as I worked on more projects Marie began to become more usefull. Things that I kept doing over and over were added to the code and problems I kept running into were made easier to find. Other features to help move things along were also added. On April 26, 2011 Marie was released to the public in hopes that this framework will help others as much as it has helped me.
 Contact Me
 trydyingtolive@gmail.com
-facebook.com/trydyingtolive
+facebook.com/trydyingtolive 
