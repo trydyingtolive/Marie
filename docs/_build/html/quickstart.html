@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Getting Started With Marie &mdash; Marie v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Marie v1.0 documentation" href="index.html" />
+    <link rel="next" title="&lt;no title&gt;" href="manual.html" />
+    <link rel="prev" title="Welcome to Marie’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="manual.html" title="&lt;no title&gt;"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Marie’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Marie v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started-with-marie">
+<h1>1. Getting Started With Marie<a class="headerlink" href="#getting-started-with-marie" title="Permalink to this headline">¶</a></h1>
+<p>Marie is a snap to set up and run. This document was created to get up up and running as quickly as possible.</p>
+<div class="section" id="installing-marie">
+<h2>1.1. Installing Marie<a class="headerlink" href="#installing-marie" title="Permalink to this headline">¶</a></h2>
+<p>Marie can be installed by via PIP, easy_install, setup.py, Windows installer or by simply placing marie.py in the same directory as your web app.</p>
+<p>PIP:</p>
+<div class="highlight-python"><pre>pip install marie</pre>
+</div>
+<p>easy_install:</p>
+<div class="highlight-python"><pre>easy_install marie</pre>
+</div>
+<p>To use the setup file download the source file at the <a class="reference external" href="http://pypi.python.org/pypi/Marie/">Cheese Shop</a> and uncompress and run the setup script like this:</p>
+<div class="highlight-python"><pre>python setup.py install</pre>
+</div>
+<p>The Cheese Shop also contains a Windows executable.</p>
+</div>
+<div class="section" id="first-steps">
+<h2>1.2. First Steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h2>
+<p>A Simple first Hello world application is as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">marie</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World&quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+<span class="n">marie</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In the first line we import the Marie framework. Next we create a function that
+will return a string. It returns the words &#8220;Hello World&#8221;. The next line
+&#8220;exposes&#8221; the root document to our function. The last line starts our server.</p>
+<p>If you run the program and turn your browser to <a class="reference external" href="http://localhost/">http://localhost/</a> (or the IP of the
+server) you will see the message &#8220;Hello World&#8221; Our next example will be
+slightly more complex, but will give us a dynamic result.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">marie</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;World&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;Hello </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+<span class="n">marie</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This example changes two lines, but makes a huge difference. The line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">return</span> <span class="s">&quot;Hello </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
+</pre></div>
+</div>
+<p>may look a little odd if you aren&#8217;t used to it. The <tt class="docutils literal"><span class="pre">%s</span></tt> is a placeholder for
+the value of the variable <tt class="docutils literal"><span class="pre">name</span></tt>. Whatever the value of <tt class="docutils literal"><span class="pre">name</span></tt> is will put
+in place for <tt class="docutils literal"><span class="pre">%s</span></tt>. So if the value of <tt class="docutils literal"><span class="pre">name</span></tt> is &#8220;Marie&#8221; the function will
+return &#8220;Hello Marie&#8221;.</p>
+<p>Our function has also been given two new arguments: <tt class="docutils literal"><span class="pre">environ</span></tt> and <tt class="docutils literal"><span class="pre">name</span></tt>.
+The first is automatically provided by the framework and is all of the
+information about the request. The second will contain the value of the first
+URL argument. A URL argument is any part of the URL that comes after the actual
+exposed function. In this example if we were to visit &#8220;<a class="reference external" href="http://localhost/Marie">http://localhost/Marie</a>&#8221;
+our first URL argument would be &#8220;Marie&#8221; and therefore the value of <tt class="docutils literal"><span class="pre">name</span></tt>
+wouldbe &#8220;Marie&#8221;. Alternativly if you were to visit &#8220;<a class="reference external" href="http://localhost/">http://localhost/</a>&#8221; there would
+be no URL arguments and the value of <tt class="docutils literal"><span class="pre">name</span></tt> would default to &#8220;World&#8221;</p>
+<p>All this results in the ability to visit &#8220;<a class="reference external" href="http://localhost/">http://localhost/</a>&#8221; and recieve the
+message &#8220;Hello World&#8221; or to visit &#8220;<a class="reference external" href="http://localhost/Your%20Name">http://localhost/Your%20Name</a>&#8221; and it will
+respond with &#8220;Hello Your Name&#8221;</p>
+<p>If you take this example a little farther we can do this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">marie</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;World&quot;</span><span class="p">,</span> <span class="n">greeting</span><span class="o">=</span><span class="s">&quot;Hello&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">greeting</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+<span class="n">marie</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now if you visit &#8220;<a class="reference external" href="http://localhost/">http://localhost/</a>&#8221; you will see &#8220;Hello World&#8221;. If you visit
+&#8220;<a class="reference external" href="http://localhost/Marie">http://localhost/Marie</a>&#8221; it will respond with &#8220;Hello Marie&#8221; and
+&#8220;<a class="reference external" href="http://localhost/Marie/Howdy">http://localhost/Marie/Howdy</a>&#8221; will return &#8220;Howdy Marie&#8221;. Finally if you are
+naughty and visit &#8220;<cite>http://localhost/&lt;script&gt;alert(&#8220;test&#8221;)&lt;/script&gt;</cite>&#8221; you will
+be dissapointed.</p>
+<p>Now that you are done move on to the <a class="reference internal" href="manual.html"><em>manual</em></a> and learn about
+all the things that you can do with Marie.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">1. Getting Started With Marie</a><ul>
+<li><a class="reference internal" href="#installing-marie">1.1. Installing Marie</a></li>
+<li><a class="reference internal" href="#first-steps">1.2. First Steps</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Marie&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="manual.html"
+                        title="next chapter">&lt;no title&gt;</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/quickstart.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="manual.html" title="&lt;no title&gt;"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Marie’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Marie v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mark W. Lee.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

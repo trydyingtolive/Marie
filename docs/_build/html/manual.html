@@ -1,0 +1,698 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. Marie Manual &mdash; Marie v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Marie v1.0 documentation" href="index.html" />
+    <link rel="prev" title="1. Getting Started With Marie" href="quickstart.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="quickstart.html" title="1. Getting Started With Marie"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Marie v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="marie-manual">
+<h1>2. Marie Manual<a class="headerlink" href="#marie-manual" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>2.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="why-was-marie-created">
+<h3>2.1.1. Why Was Marie Created?<a class="headerlink" href="#why-was-marie-created" title="Permalink to this headline">¶</a></h3>
+<p>Marie was written out of a desire to have a safe and quick method of creating simple Python web applications. I had tried and was ultimately unsatisfied with the core decisions of the few micro-frameworks there were at the time. Therefore, I set out to make a framework that suited the kind of things I was doing.</p>
+<p>That framework, which I called Marie, evolved over the course of several projects. Eventually, the code reached a place where each application didn&#8217;t require a major change or a new feature added. The result is a deliciously simple, incredibly fast WSGI micro web framework.</p>
+</div>
+<div class="section" id="what-to-expect-from-marie">
+<h3>2.1.2. What to expect from Marie<a class="headerlink" href="#what-to-expect-from-marie" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Take the rough edges off.</strong></dt>
+<dd>Things as simple as getting a URL to respond to the write script can be an annoying task.  Headers, redirects, cookies, sessions, POSTs, Unicode compatibility, configuring, and URL arguments are not any more fun. Marie aims to help you get the info you need and send back your reply as simply as possible.</dd>
+<dt><strong>Quick</strong></dt>
+<dd>Marie was designed to be light on her feet, and not just in a &#8216;Hello World&#8217; benchmark. Request bodies, URL arguments, and query strings have a tendency to slow down frameworks even if the application doesn&#8217;t use them. Marie stays fast by either pre-parsing information or by only parsing the information you ask for, up to twice as fast in some situations.</dd>
+<dt><strong>Simple</strong></dt>
+<dd>Simplicity isn&#8217;t just for speed and ease of use, it&#8217;s also for hackability. Don&#8217;t like the way Marie does something? Change it! Marie has a dozen different configuration variables that are easy and straight forward to set.  If that isn&#8217;t enough for you, Marie is a single file about 500 lines; dive right into the code and hack away. We&#8217;ve even set up a section in the documentation if you want to change something.</dd>
+<dt><strong>Environ Overloading</strong></dt>
+<dd>Marie uses and abuses the environ dictionary. Marie shoves a ton of information into the environ. This is the main way information about the request is passed to the function.  This information isn&#8217;t only the raw stuff from the server.  Nope, Marie adds in objects that are easy and fast to read and edit. As an added bonus certain changes made to the environ are passed back to the server.</dd>
+<dt><strong>Redis</strong></dt>
+<dd>Marie was designed to be quick and simple, and Redis keeps our sessions conformed to our goals. Redis is a disk backed in memory key value store.  Using Redis or the built in sessions is optional, and using your own session scheme is possible.</dd>
+<dt><strong>Mako</strong></dt>
+<dd>Mako is a powerful yet fast templating engine. Marie makes using Mako just as simple as not using templates. Using Mako is optional.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="routing">
+<h2>2.2. Routing<a class="headerlink" href="#routing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>2.2.1. Introduction<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>Let&#8217;s jump right in with a quick hello world app. Create a new file we&#8217;ll call it MyApp.py. Make sure that Marie is in the same directory with your new file. Add this code to MyApp.py: ::</dt>
+<dd><p class="first">import marie</p>
+<dl class="docutils">
+<dt>def index():</dt>
+<dd>return &#8220;Hello World&#8221;</dd>
+</dl>
+<p>marie.expose(&#8216;/&#8217;, index)</p>
+<p class="last">marie.run()</p>
+</dd>
+</dl>
+<p>Deliciously simple, eh? Of course it is! It only produces &#8220;Hello World&#8221; after all. Run your application and then steer your browser to  127.0.0.1 and see your creation. You are a hero.</p>
+<p>Let&#8217;s dig in and see what all this is. Line 1 simply imports Marie. This is why you needed marie.py to be located in the same directory as your application. Python had to be able to find it. The easiest way is to simply save them in the same place.</p>
+<p>Line 3 and 4 are our simple function. Line 5 is where the magic happens, we are telling Marie about our function and that whenever someone visits the root directory (&#8216;/&#8217;) they should be given the output of index(). Finally marie.run() starts the webserver for us.</p>
+<p>Tip: If you are running Marie&#8217;s web server on Linux or OSX you may need to run your server using the sudo command, though be careful as this would give your website the powers of root.</p>
+<p>Tip: If at any point you would like to stop Marie&#8217;s web server from running simply use Python&#8217;s built-in keyboard interrupt: Ctrl + C.</p>
+</div>
+<div class="section" id="routing-basics">
+<h3>2.2.2. Routing Basics<a class="headerlink" href="#routing-basics" title="Permalink to this headline">¶</a></h3>
+<p>Routing is the primary purpose of Marie. This gives us an easy and quick way to have our URL&#8217;s point to different functions. Let&#8217;s do another more advanced illustration.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">marie</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World&quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">route</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;This routing is pretty cool&quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&quot;/routing&quot;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+<span class="n">marie</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now take your browser to &#8220;127.0.0.1/routing&#8221;. When we went to /routing Marie used the route() function. If you travel to the root directory &#8216;/&#8217; you will see the output index() again. You have just discovered one of the most important features of Marie&#8217;s routing. Marie will first try to match the longest URLs before trying a shorter and shorter version of the URL (within the same HTTP method). What does this mean? If you go to &#8220;/routing/doesnotexist&#8221;, instead of giving you a 404 error, Marie will first try the shorter URL of &#8220;/routing&#8221;. More importantly it will progressively try shorter and shorter URL&#8217;s meaning you can stack as many arguments in the URL as you want. Later on we will show you how to access those arguments.</p>
+<p>Note: Exposed URL&#8217;s should begin with a &#8216;/&#8217;. &#8216;routing&#8217; would be incorrect, &#8216;/routing/&#8217; would be ill advised, but &#8216;/routing&#8217; will bring success.</p>
+</div>
+<div class="section" id="debugging">
+<h3>2.2.3. Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>You may have noticed already that, if you make a mistake and make a runtime error, Marie will catch it and present a non-descript error page.  This isn&#8217;t very handy for figuring out what is wrong. In order to find out the error simply enable debugging when you expose a function. ::</dt>
+<dd><dl class="first docutils">
+<dt>def index():</dt>
+<dd>return IAmAnError</dd>
+</dl>
+<p class="last">marie.expose(&#8216;/&#8217;, index, debug=True)</p>
+</dd>
+</dl>
+<p>If you run your code it will produce a full traceback and a dump of the environ. Be sure to remove the debug attribute before publishing your application as the traceback can cause security issues.</p>
+</div>
+<div class="section" id="route-stacking">
+<h3>2.2.4. Route Stacking<a class="headerlink" href="#route-stacking" title="Permalink to this headline">¶</a></h3>
+<p>This would be a good time for some example of route stacking. In this example we will expose 3 functions to URLs.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World&quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">blog</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Blog Index&quot;</span>  <span class="c">##Add pages when I learn about URL arguments</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/blog&#39;</span><span class="p">,</span> <span class="n">blog</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">blog_admin</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Admin Page&quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/blog/admin&#39;</span><span class="p">,</span> <span class="n">blog_admin</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example we have a home page at &#8216;/&#8217; for index(); a blog at &#8216;/blog&#8217;  for blog(); and a admin page for the blog at &#8216;/blog/admin&#8217;</p>
+<ul class="simple">
+<li>The user requests &#8220;/blog/page/1&#8221;<ul>
+<li>Marie tries at the url &#8220;/blog/page/1&#8221; and finds nothing</li>
+<li>Marie tries at the url &#8220;/blog/page&#8221; and finds nothing</li>
+<li>Marie tries at the url  &#8220;/blog&#8221;  and runs the function blog()</li>
+</ul>
+</li>
+<li>The user requests &#8220;/blog/admin&#8221;<ul>
+<li>Marie tries the url &#8220;/blog/admin&#8221; and runs the function blog_admin()</li>
+</ul>
+</li>
+<li>The user request &#8220;/blaaged/admin&#8221;<ul>
+<li>Marie tries the url &#8220;/blaaged/admin&#8221; and finds nothing</li>
+<li>Marie tries the url &#8220;/blaaged&#8221; and finds nothing</li>
+<li>Marie tries the url &#8220;/&#8221; and runs the function index()</li>
+</ul>
+</li>
+</ul>
+<p>I hope that the goals of this routing method are clear to you. It means that your application is more likely to resist 404&#8217;s and it allows for your URLs to be as flexible as you want them to be.</p>
+</div>
+<div class="section" id="methods">
+<h3>2.2.5. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h3>
+<p>The final topic in the basic overview of routing is methods. So far all of our examples used the HTTP GET method. This alone will simply not cut it. These are the days of REST we need more methods! Good news, changing the method is ultra easy.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World&quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ok, I threw two things at you. First of all you notice there are two marie.expose(). That is because you can route a function to different URL&#8217;s the first is to the root directory for a GET and the second is for the root directory for a POST. You can expose to any HTTP method your server can handle. It is important to note that in this example a GET request to &#8216;/&#8217; and a POST request to &#8216;/&#8217; will be fulfilled, but no other method. You have to expose to each method individually.</p>
+</div>
+</div>
+<div class="section" id="environ">
+<h2>2.3. Environ<a class="headerlink" href="#environ" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>2.3.1. Introduction<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>WSGI generates quite a bit of information about each and every request. This is a good thing, it means we get plenty of information to work with, and information is fun to play with. This request information is passed on to us via a Python dictionary called the &#8220;environ&#8221;. Marie uses a design I like to call &#8220;environ overloading&#8221;. In short nearly everything is done through the environ. Form input, cookies, headers are all passed to the functions via the environ, and any changes made to the environ, such as headers, are passed back to the server.  If you&#8217;ve ever had to spend time sifting through documents about how to read and set cookies or worse process a POST, you will appreciate that Marie will take care of the tedious stuff.</p>
+<p>To start let&#8217;s take a peek at your environ.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">marie</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">environ</span><span class="p">)</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span><span class="n">index</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">marie</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>First of all notice that we have added one argument to our function. This argument is optional, but note that the first argument of any exposed function will be passed the environ.</p>
+<p>Go to &#8220;127.0.0.1&#8221; and you&#8217;ll get to see all sorts of information. It&#8217;s in a sort of mixed unsorted jumble. That&#8217;s ok; if you are familiar with WSGI all of the standard information is there. What I do want to draw you attention to all of the keys that start with the word &#8220;MARIE&#8221; these are the special bits added by the framework to make your life easier.</p>
+</div>
+<div class="section" id="url-arguments">
+<h3>2.3.2. URL Arguments<a class="headerlink" href="#url-arguments" title="Permalink to this headline">¶</a></h3>
+<p>Remember all that hubbub we went through in the routing section? How you can have a URL of any length and Marie will try and find the longest matching route. In the above example you could have a URL &#8220;/blog/page/1&#8221; and Marie would match it to &#8220;/blog&#8221;. Now we want to know which page that blog was on if any.</p>
+<div class="section" id="function-arguments">
+<h4>2.3.2.1. Function Arguments<a class="headerlink" href="#function-arguments" title="Permalink to this headline">¶</a></h4>
+<p>The most straight forward way of getting these arguments is to simply add them as arguments in your exposed function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">blog</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s">&#39;home&#39;</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="s">&#39;0&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;The location is &quot;</span><span class="si">%s</span><span class="s">&quot;, and the page is &quot;</span><span class="si">%s</span><span class="s">&quot; &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">location</span><span class="p">,</span><span class="n">page</span><span class="p">)</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/blog&#39;</span><span class="p">,</span><span class="n">blog</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you aren&#8217;t very familiar with Python or programming this may be a little confusing, but it is a serious shortcut. If you check out &#8220;/blog/page/1&#8221; you will see the following message &#8216;The location is &#8220;page&#8221;, and the page is &#8220;1&#8221;&#8217;. You can change or remove the URL arguments to see how the message changes.</p>
+<p>There are a few things that are going on. First of all Marie will only pass arguments you ask for. This means <tt class="docutils literal"><span class="pre">*args</span></tt> won&#8217;t work. Secondly, Marie will only pass arguments if they exist, so every argument needs a default value. Third if there are more URL arguments than there are arguments in your exposed function Marie won&#8217;t try and pass those (Marie only passes arguments you request).</p>
+<p>It is important to note again that the first argument will always be the environ.</p>
+</div>
+<div class="section" id="marie-url-args">
+<h4>2.3.2.2. MARIE_URL_ARGS<a class="headerlink" href="#marie-url-args" title="Permalink to this headline">¶</a></h4>
+<p>Sometimes you want to make sure that you get all of your URL arguments. This is where MARIE_URL_ARGS comes in. MARIE_URL_ARGS is a list of all the parts of the url that aren&#8217;t part of the route used. In the example of our blog (/blog/page/1) MARIE_URL_ARGS would return [&#8216;page&#8217;, &#8216;1&#8217;]. Let&#8217;s modify our above code to take a look at this</p>
+<dl class="docutils">
+<dt>def blog(environ):</dt>
+<dd><p class="first">output=&#8221;The URL  args are: &lt;br&gt;&#8221;
+for arg in environ[&#8216;MARIE_URL_ARGS&#8217;]:</p>
+<blockquote>
+<div>output+=&#8221;&lt;br&gt;&#8221;
+output+=arg</div></blockquote>
+<p class="last">return output</p>
+</dd>
+</dl>
+<p>marie.expose(&#8216;/blog&#8217;,blog, debug=True)</p>
+<p>This function simply iterates through environ[&#8216;MARIE_URL_ARGS&#8217;] and adds it to a list. Now visit &#8216;/blog/item1/item2/a third item&#8217; and see what you get. Change the number of arguments and experiment. You can see how this would be a handy way of passing information to the server, but it isn&#8217;t the only way. Marie automatically escapes all HTML from the URL arguments.</p>
+</div>
+</div>
+<div class="section" id="form-data">
+<h3>2.3.3. Form Data<a class="headerlink" href="#form-data" title="Permalink to this headline">¶</a></h3>
+<p>The MARIE_QRS and MARIE_BODY objects are a simple way of receiving the input of forms and other HTTP Requests. MARIE_QRS retrieves the information stored in the query string used by GETs. Input provided by a POST is located in MARIE_BODY. Retrieving the information within is as simple as calling the get([key]) method. Omitting a key will return a Python dictionary of all the data.</p>
+<dl class="docutils">
+<dt>MARIE_QRS.get([key]) and MARIE_BODY.get([key]) will return the values in three possible ways: as a string, a list, or a dictionary. Strings are returned for single value type elements such at text boxes and hidden fields. Lists are used when a key can have more than one value such as for a multi-select or checkboxes. A dictionary is used for file uploads. The dictionary contains two pairs: &#8216;type&#8217; for the mime-type of the file and &#8216;value&#8217; for the binary of the file. ::</dt>
+<dd><dl class="first docutils">
+<dt>def index(environ):</dt>
+<dd>name = environ[&#8216;MARIE_QRS&#8217;].get(&#8216;name&#8217;) or &#8216;World&#8217;
+return &#8216;&#8217;&#8216;Hello %s</dd>
+</dl>
+<p>&lt;form action=/ method=&#8217;POST&#8217;&gt;
+&lt;input name=name&gt;
+&lt;input type=submit&gt;
+&lt;/form&gt;&#8217;&#8216;&#8217; % name
+marie.expose(&#8216;/&#8217;, index, debug=True)</p>
+<dl class="docutils">
+<dt>def p_index(environ):</dt>
+<dd>name = environ[&#8216;MARIE_BODY&#8217;].get(&#8216;name&#8217;) or &#8220;Yellow&#8221;
+return &#8216;Jello %s&#8217; %name</dd>
+</dl>
+<p class="last">marie.expose(&#8216;/&#8217;,p_index, &#8216;POST&#8217;, debug=True)</p>
+</dd>
+</dl>
+<p>Marie automatically escapes all of the HTML that may be in the form data. This helps protect your web application is protected against some XSS attacks. This might or might not be what want depending on what you are doing. Use the argument &#8220;escape=False&#8221; to access the unescaped input.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nb">raw_input</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_BODY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="n">escape</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">raw_qrs</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_QRS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">escape</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="marie-status">
+<h3>2.3.4. MARIE_STATUS<a class="headerlink" href="#marie-status" title="Permalink to this headline">¶</a></h3>
+<p>MARIE_STATUS is the simple way to read and write the status code for the response. Marie sets the code as the default of &#8220;200 OK&#8221; for you, but you are free to change the code as your project dictates.</p>
+</div>
+</div>
+<div class="section" id="advanced-environ">
+<h2>2.4. Advanced Environ<a class="headerlink" href="#advanced-environ" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cookies">
+<h3>2.4.1. Cookies<a class="headerlink" href="#cookies" title="Permalink to this headline">¶</a></h3>
+<p>Marie passes a standard Python cookie object through the environ. It is the value of the environ key MARIE_COOKIES. You can use the object to both read and set cookies.  An example function that uses the MARIE_COOKIES would be this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">cookie</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_COOKIES&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;count&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">c</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="s">&#39;This was your first visit&#39;</span>
+    <span class="n">c</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="s">&quot;You have visited this many times: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">c</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&quot;/cookie&quot;</span><span class="p">,</span> <span class="n">cookie</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using the Python cookie object gives us plenty of access to read, modify, and add cookies. This way you have plenty of power over your cookies. For more information read the documentation in the Python standard library docs.</p>
+<p>Marie even has an easier pair of tools to help you read and write cookies a tiny bit easier.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">marie</span><span class="o">.</span><span class="n">read_cookies</span><span class="p">(</span><span class="n">environ</span><span class="p">)</span>  <span class="c">## Returns dict of cookies</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">secure</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above example using these tools would look like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">cookie</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">marie</span><span class="o">.</span><span class="n">read_cookies</span><span class="p">(</span><span class="n">environ</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;count&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">marie</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&#39;This was your first visit&#39;</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">marie</span><span class="o">.</span><span class="n">add_cookie</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">&quot;You have visited this many times: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">count</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&quot;/cookie&quot;</span><span class="p">,</span> <span class="n">cookie</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which way you read and set cookies is up to you. Using the shorter functions may be easier, but the longer way will give you more control.</p>
+</div>
+<div class="section" id="headers">
+<h3>2.4.2. Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
+<p>The ability to set headers can be very important to you.  Redirects and other advanced options require you to be able to manage your HTTP headers. Guess what! Marie passes all that information through the environ dict.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_HEADERS&#39;</span><span class="p">]</span> <span class="c">##Headers object</span>
+    <span class="n">headers</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&quot;Location&quot;</span><span class="p">,</span> <span class="s">&quot;http://google.com&quot;</span><span class="p">)</span>
+    <span class="n">headers</span><span class="o">.</span><span class="n">output</span><span class="p">()</span> <span class="c">##returns list of headers</span>
+    <span class="n">headers</span><span class="o">.</span><span class="n">rem_header</span><span class="p">(</span><span class="s">&quot;Location&quot;</span><span class="p">)</span> <span class="c">## Remove header</span>
+</pre></div>
+</div>
+<p>Here is a quick shortcut for redirects. Rather than changing the header, and status yourself Marie will do all the hard work for you. Just return the redirect function. Setting the status is optional and defaults to 303 See Other.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">redirect</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">marie</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="s">&quot;http://google.com&quot;</span><span class="p">,</span>  <span class="n">status</span><span class="o">=</span><span class="s">&quot;303 See Other&quot;</span><span class="p">)</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/redirect&#39;</span><span class="p">,</span><span class="n">redirect</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="templates-with-mako">
+<h2>2.5. Templates with Mako<a class="headerlink" href="#templates-with-mako" title="Permalink to this headline">¶</a></h2>
+<p>Marie has support for Mako templates out of the box. You will of course need to have Mako installed on your system, but after that Marie makes it easy. We&#8217;ll take care of all of the Unicode, directories, and error handling. Notice that we return a dictionary rather than a string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span>  <span class="nn">marie</span>
+
+<span class="n">marie</span><span class="o">.</span><span class="n">template_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;/location/of/templates&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;No One&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span><span class="n">name</span><span class="p">}</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="n">index</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s">&quot;example.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you have an error simply add debug=True to marie.expose(). Any errors related to the template will display Mako&#8217;s built in debugging tools.</p>
+<p>For more information on how to use Mako visit <a class="reference external" href="http://www.makotemplates.org/">http://www.makotemplates.org/</a></p>
+<p>Note: There are other options for Mako. See Properties (and Defaults) in the Modifying Marie section.</p>
+</div>
+<div class="section" id="internal-routing">
+<h2>2.6. Internal Routing<a class="headerlink" href="#internal-routing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="how-to-use">
+<h3>2.6.1. How to Use<a class="headerlink" href="#how-to-use" title="Permalink to this headline">¶</a></h3>
+<p>Suppose you want to redirect to another function without using an HTTP redirect? Well Marie has a feature for you. It&#8217;s called internal routing and it can be a very helpful tool. Rather than exposing a function to a URL like you would normally, you name your function so Marie can find it later. For example let&#8217;s say you have users fill out a form. If a required part is blank you can reroute them back to the form with the missing fields highlighted. Internal routes have all the features of a normally routed function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">fail_login</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;We are sorry, but the login failed&#39;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">internal</span><span class="p">(</span><span class="s">&#39;fail&#39;</span><span class="p">,</span><span class="n">fail_login</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">incomplete_form</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;Unknown part&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;You need to fill out this part of the form: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">message</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">internal</span><span class="p">(</span><span class="s">&#39;fail&#39;</span><span class="p">,</span><span class="n">incomplete_form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You may have noticed that this looks like a normally exposed function, and mostly it is. The only major difference is you use marie.internal() rather than marie.expose(). Also note that since this is an internally referenced function there are a couple of other differences. First rather than exposing the function to a URL, we give it a name so we can ask Marie for it later. Second since our function isn&#8217;t exposed to the outside world there is no method argument nor is there an authorization argument. Third Marie will rewrite environ[&#8216;MARIE_URL_ARGS&#8217;] with your message information. You can still set debug=True if you want and internal routes also support templates.</p>
+<p>Switching to an internal route is as simple as creating one. Simply use <tt class="docutils literal"><span class="pre">marie.reroute(name,</span> <span class="pre">message)</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">we_know</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;We know who you are Marie&#39;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">internal</span><span class="p">(</span><span class="s">&#39;we_know&#39;</span><span class="p">,</span><span class="n">we_know</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">==</span><span class="s">&quot;Maire &quot;</span><span class="p">:</span>
+        <span class="n">marie</span><span class="o">.</span><span class="n">reroute</span><span class="p">(</span><span class="s">&#39;we_know&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;Welcome! &quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example if you visit /Marie you will be rerouted to the internal route of we_know(). We can also send a message.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">we_know</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;Mystery&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;We know who you are </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">message</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">internal</span><span class="p">(</span><span class="s">&#39;we_know&#39;</span><span class="p">,</span><span class="n">we_know</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">marie</span><span class="o">.</span><span class="n">reroute</span><span class="p">(</span><span class="s">&#39;we_know&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;Who are you?&#39;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case a message is sent to the rerouted function. This way you can send information from the first route to the next. This example showed sending a message as a string, but you can send other things like dictionaries and objects as messages. And yes, you can chain multiple reroutes.</p>
+</div>
+<div class="section" id="special-internal-routes">
+<h3>2.6.2. Special Internal Routes<a class="headerlink" href="#special-internal-routes" title="Permalink to this headline">¶</a></h3>
+<p>There are two special internal routes which are related to error messages. Marie will only ever throw a 500 Internal Server Message or a 404 Not Found error on her own. You can change the way these two error pages look by creating internal routes for them.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">error_404</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;Sorry, We lost your page!&#39;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">internal</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span><span class="n">error_404</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">error_500</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;Whoa! What did you do?&#39;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">internal</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="n">error_500</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These two special errors work almost identically to regular internal routes except for a few things. First you cannot pass messages, so don&#8217;t even try. Secondly they have specific names to be routed to. The &#8216;Not Found&#8217; error needs to be named the int 404 and the &#8216;Internal Sever Error&#8217; must be named the int 500. Other than that they can use templates and debug like every other route type.</p>
+<p>It should be noted that if your 500 function throws an error, Marie will still catch it and display her default error page.</p>
+</div>
+</div>
+<div class="section" id="authorization">
+<h2>2.7. Authorization<a class="headerlink" href="#authorization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>2.7.1. Introduction<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Marie comes with a simple authorization scheme. With sessions you can easily separate the parts of your site that require authorization from the parts for the general public.</p>
+<p>The authorization scheme requires three things to make it work. First of all you will need the Redis database. Redis is a key value storage system that resides in memory. Unlike a cache such as memcached, Redis regularly saves the data disk making it both persistent and fast.</p>
+<p>You will also need the Python library for Redis and in a location that is accessible to Marie. Note that simply placing the library in the same location as Marie or your application may not be enough to let Marie import the library. You may need append the system path or move the library to the proper directory.</p>
+<p>Thirdly you will need a json library. If you are using Python 2.6 or later it&#8217;s included and you are good to go. Marie will also work out of the box with simplejson.</p>
+<p>Note: Just because a user is authorized it doesn&#8217;t mean that Marie will keep them from seeing other user&#8217;s data. You have to do that yourself.</p>
+</div>
+<div class="section" id="why-redis">
+<h3>2.7.2. Why Redis?<a class="headerlink" href="#why-redis" title="Permalink to this headline">¶</a></h3>
+<p>Redis was chosen because it&#8217;s fast ?blistering fast. Since Redis stores all of its data in memory, it is able to respond to requests very quickly. It is likely that you will make the most requests to your database for sessions. Every time someone tries to access a secure part of your application their session will have to be authenticated. There is no reason to keep hitting the disk. Keep it in memory and keep it fast.</p>
+<p>Another important feature of Redis is its simplicity. Redis is a key value storage. This means that it is very easy to use and even easy to modify and hack the way Marie interacts with it. Rather than using a schema Marie stores user information in JSON strings.</p>
+<p>For more information on Redis visit <a class="reference external" href="http://www.redis.io">http://www.redis.io</a></p>
+</div>
+<div class="section" id="three-step-process">
+<h3>2.7.3. Three Step Process<a class="headerlink" href="#three-step-process" title="Permalink to this headline">¶</a></h3>
+<p>Marie uses a three step system to create users.  First you create a new user. This new user exists, but has no authorization authority.  Second, when you create a new user Marie will give you a registration code. This registration code is then needed to set a password.  Finally, the user can have his password set and is now an authorized user.</p>
+<p>The use of a registration code seems like an extra step at first. Why not just let a user be created and given a password without the need of that extra step? The simple reason is that it&#8217;s easier to bypass the extra step than to create that step if needed. Let&#8217;s take an example.</p>
+<p>Your website allows users to register in order to leave comments. However, you want to make sure that they have legitimate e-mail addresses.  So you create a form that has two inputs &#8220;username&#8221; and &#8220;email&#8221;.  When a new user signs up you want to email them a link to let them finish the registration process.</p>
+<p>Your site then creates a new user using the provided username. Marie returns a registration code. You can then send that registration code via email. Your users can copy that code and paste it in a form along with their new password. When they are done they can log in.</p>
+<p>That&#8217;s a nice feature to have built in. If you don&#8217;t want confirm email addresses you can have your application automatically complete that step.</p>
+</div>
+<div class="section" id="checking-redis">
+<h3>2.7.4. Checking Redis<a class="headerlink" href="#checking-redis" title="Permalink to this headline">¶</a></h3>
+<p>There is a simple tool included with Marie to make sure that Redis is set up and ready: marie.redis_info()</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">redis</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">marie</span><span class="o">.</span><span class="n">redis_info</span><span class="p">()</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/redis&#39;</span><span class="p">,</span> <span class="n">redis</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Simply visiting /redis will either tell you what isn&#8217;t working or give you an info page on your Redis server.</p>
+</div>
+<div class="section" id="creating-authorized-users">
+<h3>2.7.5. Creating Authorized Users<a class="headerlink" href="#creating-authorized-users" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s make a quick application. Nothing fancy, just a way to show how to create users and start sessions.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">marie</span>
+</pre></div>
+</div>
+<p>Our app starts by importing the Marie Framework. Next we will make our index page for non authorized users. Folks who haven&#8217;t logged in will see this function. It simply contains a form to log in and a link to make new users.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">non_auth</span><span class="p">():</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">You are not logged in!</span>
+<span class="s">&lt;form method=post action=/login&gt;</span>
+<span class="s">Log-in:&lt;br&gt;</span>
+<span class="s">User:&lt;input name=username&gt;&lt;br&gt;</span>
+<span class="s">Pass:&lt;input name=password type=password&gt;&lt;br&gt;</span>
+<span class="s">&lt;input type=submit value=&#39;Log in&#39;&gt;</span>
+<span class="s">&lt;/form&gt;</span>
+<span class="s">&lt;a href=/new&gt;Or create a new account&lt;/a&gt;</span>
+<span class="s">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">output</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span><span class="n">non_auth</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next we will make an index page for folks who are logged in. It displays the username found in one of the session cookies. Notice that this function is also exposed to the root directory, except that this time it has the authorization variable set to True. This means that there are two functions for the same URL: one for people logged in and on for those who aren&#8217;t.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">authorized</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;Hi </span><span class="si">%s</span><span class="s">! You are now authorized.</span>
+<span class="s">&lt;br&gt; &lt;a href=/logout&gt;Logout&lt;/a&gt;</span>
+<span class="s">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_SESSION&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">output</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">authorized</span><span class="p">,</span> <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This next function is a simple form to create a new user. It is important to note than this function is exposed as the default &#8216;GET&#8217; method. The form points to the same URL (/new) but with a POST method. The username is located in environ[&#8216;MARIE_SESSION&#8217;].</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">new_user</span><span class="p">():</span>
+    <span class="n">output</span><span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">Create a new user.</span>
+<span class="s">&lt;form method=post action=/new&gt;</span>
+<span class="s">User:&lt;input name=username&gt;&lt;br&gt;</span>
+<span class="s">Pass:&lt;input name=password&gt;&lt;br&gt;</span>
+<span class="s">&lt;input type=submit value=&quot;Create New User&quot;</span>
+<span class="s">&lt;/form&gt;&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">output</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/new&#39;</span><span class="p">,</span> <span class="n">new_user</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When the form is submitted it is submitted to this function. Notice that it is exposed as a POST rather than a GET. This takes the form data and checks to make sure they aren&#8217;t blank. If they are it will throw a specialized error message saying &#8216;Fields may not be blank&#8217;. The next line accesses the authorization object. We then use that authorization method to create a new user. The server will return a registration id. Since we don&#8217;t want to confirm an e-mail address for this example we will then use that registration id immediately to set the user&#8217;s password. (If you are keeping track we completed the three steps of registering a new user in two lines.)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">new_user_post</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">username</span><span class="o">=</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_BODY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">password</span><span class="o">=</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_BODY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;password&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">marie</span><span class="o">.</span><span class="n">MinorError</span><span class="p">(</span><span class="s">&#39;Username and password required&#39;</span><span class="p">)</span>
+    <span class="n">auth</span> <span class="o">=</span> <span class="n">marie</span><span class="o">.</span><span class="n">Auth</span><span class="p">()</span>
+    <span class="n">registration</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">register_user</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="n">auth</span><span class="o">.</span><span class="n">change_password</span><span class="p">(</span><span class="n">registration</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">&#39;User created&#39;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/new&#39;</span><span class="p">,</span> <span class="n">new_user_post</span><span class="p">,</span> <span class="s">&#39;POST&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now that we have created a new user we need a way to log in. This function is where the form from the unauthorized root page points to. Notice that it is exposed as a POST. After getting the username and password that were submitted, we create a new authorization object. The &#8220;if&#8221; statement tests to see if the username and password are a matching pair. If so, we create a new session that gets passes into the cookie object in the environ. Finally it returns a redirect to the root page, this time showing  the authorized version. If the username and password aren&#8217;t a match they get a little message telling them so.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">username</span><span class="o">=</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_BODY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">password</span><span class="o">=</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_BODY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;password&#39;</span><span class="p">)</span>
+    <span class="n">auth</span> <span class="o">=</span> <span class="n">marie</span><span class="o">.</span><span class="n">Auth</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">auth</span><span class="o">.</span><span class="n">authorize_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">new_session</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">marie</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;User is not authorized!&#39;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/login&#39;</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="s">&#39;POST&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The final function logs us out. It simply uses the authorization object to invalidate the session. Notice that the function is exposed with the authorized argument set as true. Users have to be logged in before they can log out. One thing of note is that Marie doesn&#8217;t simply actually remove the session cookies from the web browser, rather it deletes the session in the database. Once the session is closed it cannot be used again.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">auth</span> <span class="o">=</span> <span class="n">marie</span><span class="o">.</span><span class="n">Auth</span><span class="p">()</span>
+    <span class="n">auth</span><span class="o">.</span><span class="n">close_session</span><span class="p">(</span><span class="n">environ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">marie</span><span class="o">.</span><span class="n">redirect</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">)</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/logout&#39;</span><span class="p">,</span> <span class="n">logout</span><span class="p">,</span> <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And last we tell Marie to start up the server.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">marie</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note: Marie can change password too. The process is the same. Create a new user using an existing username (note this doesn&#8217;t remove the original password). Marie will return a registration number. Use that number to reset the user&#8217;s password. It is important that you check to see if a username already exists before adding a new user.</p>
+</div>
+<div class="section" id="authorization-and-routing">
+<h3>2.7.6. Authorization and Routing<a class="headerlink" href="#authorization-and-routing" title="Permalink to this headline">¶</a></h3>
+<p>After you get this code up and running there are a couple of things that I would like to point out about how Marie deals with authorized and unauthorized routes. First of all Marie gives priority to authorized sessions over unauthorized sessions. That&#8217;s why there were two indexes exposed to the same URL. When you were not logged in you weren&#8217;t allowed to see the version with the authorization set to True, so Marie routed you to the one you could see.  When you were logged in, Marie gave priority to the authorized function.</p>
+<p>One thing you may have noticed is that when you are logged in you can still see pages that are not set as authorized. You can actually be logged in and visit /new and add another new user. That&#8217;s because if Marie doesn&#8217;t find an authorized version for someone who is logged in, it will give them the unauthorized version instead. The same rule still applies Marie will always route you to the longest matching URL. The only difference is when an authorized and an unauthorized function are routed to the same URL Marie will give priority to the authorized function (so long as the user is authorized.)</p>
+<p>Note: With all this talk of authorized and unauthorized versions it is important to remind you that Marie only checks to see if a session exists. Marie will not automatically differentiate one session from another. In other words, if you want to keep data for one user from being seen by another user, you will have to do that yourself.</p>
+</div>
+</div>
+<div class="section" id="customization">
+<h2>2.8. Customization<a class="headerlink" href="#customization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h3>2.8.1. Introduction<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Part of the reason Marie is so simple is so that you can change it as you please. Marie has no lack of options to customize how it works for you.</p>
+</div>
+<div class="section" id="properties-and-defaults">
+<h3>2.8.2. Properties (and Defaults)<a class="headerlink" href="#properties-and-defaults" title="Permalink to this headline">¶</a></h3>
+<p>Change these variables to set the way Marie handles certain situations. The defaults are shown.:</p>
+<div class="highlight-python"><pre>marie.content_type='text/html' Sets the default content type. Change to 'application/xhtml+xml' for xhtml
+marie.encoding = 'utf-8' Change the encoding. Just keep it Unicode, think of the children.
+marie.error_file = None  This is the full path to an error log file. This is important if you want to be able to read any information about errors that Marie catches.
+marie.salt = 'mariesalt' This is just a customizable salt for passwords and sessions. Change it as you please so not everyone's salt is the same.
+marie.secure_cookie=False Send session information via Secure Cookies. Requires HTTPS.
+marie.session_lease=60*60*24 Time to live set for each session after last request
+marie.user_db=0 This is the Redis database for user information
+marie.registration_db=1 This is the Redis database for registration information
+marie.session_db=2 This is the Redis database for session information
+marie.template_dirs = ['.'] List of directories for your templates.
+marie.template_bytecode_dir = None Location of temporary directory for saving precompiled versions of your templates
+marie.template_updates = True Checks to see if newer versions of the templates exist. Set False to improve speed, keep True for development.</pre>
+</div>
+</div>
+<div class="section" id="making-major-changes">
+<h3>2.8.3. Making Major Changes<a class="headerlink" href="#making-major-changes" title="Permalink to this headline">¶</a></h3>
+<p>Marie was designed to be as simple as possible and to be as hackable as possible. These two goals don&#8217;t always go hand in hand since URL routing is sort of a sketchy task. This section is just a few notes to get you started on modifying a bit deeper.</p>
+<p>marie.application.check_auth is the location of the function that is used to see if the user has an authorized session or not. If you wanted to push in your own database or authorization scheme this is where you do it. If this function returns True the user is authorized; False for unauthorized. If you change this part you can rip out all of the database and authorization sections.</p>
+<p>A quick note on how Marie stores routes. At the top of the application class you will notice three empty dictionaries. One is for authorized routes and other for unauthorized routes. When you expose a function to a route Marie will store it in the appropriate spot. For example if I exposed the function index() to the URL &#8216;/&#8217;, Marie would store it as :</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">unauth_routes</span><span class="p">[</span><span class="s">&quot;GET&quot;</span><span class="p">][</span><span class="s">&quot;/&quot;</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;function&#39;</span><span class="p">:</span><span class="n">index</span><span class="p">,</span> <span class="s">&#39;debug&#39;</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span> <span class="s">&#39;args&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;template&#39;</span><span class="p">:</span><span class="bp">None</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>&#8220;function&#8221; is the actual function to be run if &#8216;/&#8217; is requested; &#8220;debug&#8221; sets what happens in case of an error; &#8220;args&#8221; is the number of arguments the exposed function has, and &#8220;template&#8221; is the location of the the optional template.</p>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<h2>2.9. Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>The first type of error you may encounter is when there is an error that happens when code is malformed and cannot be compiled. This is the type of error that generally only comes up whenever you are making changes to you app.  Marie doesn&#8217;t handle this type of error because it isn&#8217;t even given a chance to get up and running. You can tell the error is cause by malformed code because all of your URLs will show the same error message. This message is generated by the server and not by Marie. Check your server&#8217;s logs for extra help.</p>
+<p>The second type of error is much more common and can easily occur on a server that is in production &#8211;a run time error. Thankfully Marie is ready to catch this kind of error. If you add &#8220;debug=True&#8221; to your marie.expose(), Marie will even print a trackback in your browser as well as the environ. Otherwise Marie will return a prepared error message and if you have logging enabled it will save the trackback and environ.</p>
+</div>
+<div class="section" id="deployment">
+<h2>2.10. Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h3>2.10.1. Introduction<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>The standard python built in WSGI server is enough for most websites. On my underpowered VM I can handle about 5 requests per second. As long as you don&#8217;t expect a heavy or even moderate load this may be enough for you. However, it would be a good idea to use a more capable web server. Marie should run on any WSGI 1.0 server or any WSGI 1.0 handler. Just by adding a better server I was able to increase the number of requests per second up to 1,700. Here are a couple of examples of how to deploy Marie on the WSGI compatible server of your choice.</p>
+</div>
+<div class="section" id="apache">
+<h3>2.10.2. Apache<a class="headerlink" href="#apache" title="Permalink to this headline">¶</a></h3>
+<p>To run Marie with Apache under mod_wsgi is fairly simple but take some configuration. The first step, of course, is installing and enabling mod_wsgi. After installation use the WSGIScriptAlias directive in your site configuration to direct requests toward the correct app file. Example:</p>
+<div class="highlight-python"><pre>WSGIScriptAlias  /blog  /var/www/pybin/blog.py
+WSGIScriptAlias  /  /var/www/pybin/index.py</pre>
+</div>
+<p>To make applications able to be accessed by mod_wsgi you need to add this line to your files:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">application</span><span class="o">=</span><span class="n">marie</span><span class="o">.</span><span class="n">application</span>
+</pre></div>
+</div>
+<p>If Apache is unable to find Marie you may need to add the following to the top of your application:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;/folder/containing/marie&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="gevent">
+<h3>2.10.3. Gevent<a class="headerlink" href="#gevent" title="Permalink to this headline">¶</a></h3>
+<p>gevent can be used as an asynchronous wsgi web server. This makes it great for highly concurrent application.  After installing gevent, just add these two lines to the bottom of your application and run.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">gevent</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="n">wsgi</span><span class="o">.</span><span class="n">WSGIServer</span><span class="p">((</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="mi">80</span><span class="p">),</span> <span class="n">marie</span><span class="o">.</span><span class="n">application</span><span class="p">,</span> <span class="n">spawn</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. Marie Manual</a><ul>
+<li><a class="reference internal" href="#introduction">2.1. Introduction</a><ul>
+<li><a class="reference internal" href="#why-was-marie-created">2.1.1. Why Was Marie Created?</a></li>
+<li><a class="reference internal" href="#what-to-expect-from-marie">2.1.2. What to expect from Marie</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#routing">2.2. Routing</a><ul>
+<li><a class="reference internal" href="#id1">2.2.1. Introduction</a></li>
+<li><a class="reference internal" href="#routing-basics">2.2.2. Routing Basics</a></li>
+<li><a class="reference internal" href="#debugging">2.2.3. Debugging</a></li>
+<li><a class="reference internal" href="#route-stacking">2.2.4. Route Stacking</a></li>
+<li><a class="reference internal" href="#methods">2.2.5. Methods</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#environ">2.3. Environ</a><ul>
+<li><a class="reference internal" href="#id2">2.3.1. Introduction</a></li>
+<li><a class="reference internal" href="#url-arguments">2.3.2. URL Arguments</a><ul>
+<li><a class="reference internal" href="#function-arguments">2.3.2.1. Function Arguments</a></li>
+<li><a class="reference internal" href="#marie-url-args">2.3.2.2. MARIE_URL_ARGS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#form-data">2.3.3. Form Data</a></li>
+<li><a class="reference internal" href="#marie-status">2.3.4. MARIE_STATUS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-environ">2.4. Advanced Environ</a><ul>
+<li><a class="reference internal" href="#cookies">2.4.1. Cookies</a></li>
+<li><a class="reference internal" href="#headers">2.4.2. Headers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#templates-with-mako">2.5. Templates with Mako</a></li>
+<li><a class="reference internal" href="#internal-routing">2.6. Internal Routing</a><ul>
+<li><a class="reference internal" href="#how-to-use">2.6.1. How to Use</a></li>
+<li><a class="reference internal" href="#special-internal-routes">2.6.2. Special Internal Routes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authorization">2.7. Authorization</a><ul>
+<li><a class="reference internal" href="#id3">2.7.1. Introduction</a></li>
+<li><a class="reference internal" href="#why-redis">2.7.2. Why Redis?</a></li>
+<li><a class="reference internal" href="#three-step-process">2.7.3. Three Step Process</a></li>
+<li><a class="reference internal" href="#checking-redis">2.7.4. Checking Redis</a></li>
+<li><a class="reference internal" href="#creating-authorized-users">2.7.5. Creating Authorized Users</a></li>
+<li><a class="reference internal" href="#authorization-and-routing">2.7.6. Authorization and Routing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#customization">2.8. Customization</a><ul>
+<li><a class="reference internal" href="#id4">2.8.1. Introduction</a></li>
+<li><a class="reference internal" href="#properties-and-defaults">2.8.2. Properties (and Defaults)</a></li>
+<li><a class="reference internal" href="#making-major-changes">2.8.3. Making Major Changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#troubleshooting">2.9. Troubleshooting</a></li>
+<li><a class="reference internal" href="#deployment">2.10. Deployment</a><ul>
+<li><a class="reference internal" href="#id5">2.10.1. Introduction</a></li>
+<li><a class="reference internal" href="#apache">2.10.2. Apache</a></li>
+<li><a class="reference internal" href="#gevent">2.10.3. Gevent</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quickstart.html"
+                        title="previous chapter">1. Getting Started With Marie</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/manual.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="quickstart.html" title="1. Getting Started With Marie"
+             >previous</a> |</li>
+        <li><a href="index.html">Marie v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mark W. Lee.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
