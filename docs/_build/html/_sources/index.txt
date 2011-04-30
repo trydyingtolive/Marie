@@ -14,6 +14,7 @@ Contents:
    
    quickstart.rst
    manual.rst
+   documentation.rst
    
 
 Indices and tables
