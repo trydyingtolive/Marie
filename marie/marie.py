@@ -44,7 +44,7 @@ try:
 except:
     pass
 
-__version__ = 1.0
+__version__ = 1.0.1
 
 
 
@@ -290,7 +290,7 @@ class Body(BaseInput):
                 d_list=[]
                 for i in range(len(post[key])):
                     entry = post[key][i].value
-                    if escape:
+                    if self.escape:
                         entry = cgi.escape(entry)
                     d_list.append(entry)
                 self.data[key]=d_list

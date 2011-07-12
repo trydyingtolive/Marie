@@ -282,7 +282,7 @@ Authorization and Database
     .. py:method:: new_session(environ, user)
     
         Creates new session for user and stores in db and cookies.
-        Assumes user is authroized. Should run ``authorize_user`` first.
+        Assumes user is authorized. Should run ``authorize_user`` first.
         
     .. py:method:: check_session(environ)
         

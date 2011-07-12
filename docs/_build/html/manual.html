@@ -80,17 +80,16 @@
 <h2>2.2. Routing<a class="headerlink" href="#routing" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>2.2.1. Introduction<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<dl class="docutils">
-<dt>Let&#8217;s jump right in with a quick hello world app. Create a new file we&#8217;ll call it MyApp.py. Make sure that Marie is in the same directory with your new file. Add this code to MyApp.py: ::</dt>
-<dd><p class="first">import marie</p>
-<dl class="docutils">
-<dt>def index():</dt>
-<dd>return &#8220;Hello World&#8221;</dd>
-</dl>
-<p>marie.expose(&#8216;/&#8217;, index)</p>
-<p class="last">marie.run()</p>
-</dd>
-</dl>
+<p>Let&#8217;s jump right in with a quick hello world app. Create a new file we&#8217;ll call it MyApp.py. Make sure that Marie is in the same directory with your new file. Add this code to MyApp.py:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">marie</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World&quot;</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+<span class="n">marie</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>Deliciously simple, eh? Of course it is! It only produces &#8220;Hello World&#8221; after all. Run your application and then steer your browser to  127.0.0.1 and see your creation. You are a hero.</p>
 <p>Let&#8217;s dig in and see what all this is. Line 1 simply imports Marie. This is why you needed marie.py to be located in the same directory as your application. Python had to be able to find it. The easiest way is to simply save them in the same place.</p>
 <p>Line 3 and 4 are our simple function. Line 5 is where the magic happens, we are telling Marie about our function and that whenever someone visits the root directory (&#8216;/&#8217;) they should be given the output of index(). Finally marie.run() starts the webserver for us.</p>
@@ -118,15 +117,12 @@
 </div>
 <div class="section" id="debugging">
 <h3>2.2.3. Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h3>
-<dl class="docutils">
-<dt>You may have noticed already that, if you make a mistake and make a runtime error, Marie will catch it and present a non-descript error page.  This isn&#8217;t very handy for figuring out what is wrong. In order to find out the error simply enable debugging when you expose a function. ::</dt>
-<dd><dl class="first docutils">
-<dt>def index():</dt>
-<dd>return IAmAnError</dd>
-</dl>
-<p class="last">marie.expose(&#8216;/&#8217;, index, debug=True)</p>
-</dd>
-</dl>
+<p>You may have noticed already that, if you make a mistake and make a runtime error, Marie will catch it and present a non-descript error page.  This isn&#8217;t very handy for figuring out what is wrong. In order to find out the error simply enable debugging when you expose a function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">IAmAnError</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>If you run your code it will produce a full traceback and a dump of the environ. Be sure to remove the debug attribute before publishing your application as the traceback can cause security issues.</p>
 </div>
 <div class="section" id="route-stacking">
@@ -214,16 +210,14 @@
 <div class="section" id="marie-url-args">
 <h4>2.3.2.2. MARIE_URL_ARGS<a class="headerlink" href="#marie-url-args" title="Permalink to this headline">¶</a></h4>
 <p>Sometimes you want to make sure that you get all of your URL arguments. This is where MARIE_URL_ARGS comes in. MARIE_URL_ARGS is a list of all the parts of the url that aren&#8217;t part of the route used. In the example of our blog (/blog/page/1) MARIE_URL_ARGS would return [&#8216;page&#8217;, &#8216;1&#8217;]. Let&#8217;s modify our above code to take a look at this</p>
-<dl class="docutils">
-<dt>def blog(environ):</dt>
-<dd><p class="first">output=&#8221;The URL  args are: &lt;br&gt;&#8221;
-for arg in environ[&#8216;MARIE_URL_ARGS&#8217;]:</p>
-<blockquote>
-<div>output+=&#8221;&lt;br&gt;&#8221;
-output+=arg</div></blockquote>
-<p class="last">return output</p>
-</dd>
-</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">blog</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">output</span><span class="o">=</span><span class="s">&quot;The URL  args are: &lt;br&gt;&quot;</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_URL_ARGS&#39;</span><span class="p">]:</span>
+        <span class="n">output</span><span class="o">+=</span><span class="s">&quot;&lt;br&gt;&quot;</span>
+        <span class="n">output</span><span class="o">+=</span><span class="n">arg</span>
+    <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+</div>
 <p>marie.expose(&#8216;/blog&#8217;,blog, debug=True)</p>
 <p>This function simply iterates through environ[&#8216;MARIE_URL_ARGS&#8217;] and adds it to a list. Now visit &#8216;/blog/item1/item2/a third item&#8217; and see what you get. Change the number of arguments and experiment. You can see how this would be a handy way of passing information to the server, but it isn&#8217;t the only way. Marie automatically escapes all HTML from the URL arguments.</p>
 </div>
@@ -231,26 +225,22 @@ output+=arg</div></blockquote>
 <div class="section" id="form-data">
 <h3>2.3.3. Form Data<a class="headerlink" href="#form-data" title="Permalink to this headline">¶</a></h3>
 <p>The MARIE_QRS and MARIE_BODY objects are a simple way of receiving the input of forms and other HTTP Requests. MARIE_QRS retrieves the information stored in the query string used by GETs. Input provided by a POST is located in MARIE_BODY. Retrieving the information within is as simple as calling the get([key]) method. Omitting a key will return a Python dictionary of all the data.</p>
-<dl class="docutils">
-<dt>MARIE_QRS.get([key]) and MARIE_BODY.get([key]) will return the values in three possible ways: as a string, a list, or a dictionary. Strings are returned for single value type elements such at text boxes and hidden fields. Lists are used when a key can have more than one value such as for a multi-select or checkboxes. A dictionary is used for file uploads. The dictionary contains two pairs: &#8216;type&#8217; for the mime-type of the file and &#8216;value&#8217; for the binary of the file. ::</dt>
-<dd><dl class="first docutils">
-<dt>def index(environ):</dt>
-<dd>name = environ[&#8216;MARIE_QRS&#8217;].get(&#8216;name&#8217;) or &#8216;World&#8217;
-return &#8216;&#8217;&#8216;Hello %s</dd>
-</dl>
-<p>&lt;form action=/ method=&#8217;POST&#8217;&gt;
-&lt;input name=name&gt;
-&lt;input type=submit&gt;
-&lt;/form&gt;&#8217;&#8216;&#8217; % name
-marie.expose(&#8216;/&#8217;, index, debug=True)</p>
-<dl class="docutils">
-<dt>def p_index(environ):</dt>
-<dd>name = environ[&#8216;MARIE_BODY&#8217;].get(&#8216;name&#8217;) or &#8220;Yellow&#8221;
-return &#8216;Jello %s&#8217; %name</dd>
-</dl>
-<p class="last">marie.expose(&#8216;/&#8217;,p_index, &#8216;POST&#8217;, debug=True)</p>
-</dd>
-</dl>
+<p>MARIE_QRS.get([key]) and MARIE_BODY.get([key]) will return the values in three possible ways: as a string, a list, or a dictionary. Strings are returned for single value type elements such at text boxes and hidden fields. Lists are used when a key can have more than one value such as for a multi-select or checkboxes. A dictionary is used for file uploads. The dictionary contains two pairs: &#8216;type&#8217; for the mime-type of the file and &#8216;value&#8217; for the binary of the file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_QRS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&#39;World&#39;</span>
+    <span class="k">return</span> <span class="s">&#39;&#39;&#39;Hello </span><span class="si">%s</span><span class="s"></span>
+<span class="s">&lt;form action=/ method=&#39;POST&#39;&gt;</span>
+<span class="s">&lt;input name=name&gt;</span>
+<span class="s">&lt;input type=submit&gt;</span>
+<span class="s">&lt;/form&gt;&#39;&#39;&#39;</span> <span class="o">%</span> <span class="n">name</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">p_index</span><span class="p">(</span><span class="n">environ</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_BODY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&quot;Yellow&quot;</span>
+    <span class="k">return</span> <span class="s">&#39;Jello </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span><span class="n">name</span>
+<span class="n">marie</span><span class="o">.</span><span class="n">expose</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span><span class="n">p_index</span><span class="p">,</span> <span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Marie automatically escapes all of the HTML that may be in the form data. This helps protect your web application is protected against some XSS attacks. This might or might not be what want depending on what you are doing. Use the argument &#8220;escape=False&#8221; to access the unescaped input.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nb">raw_input</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_BODY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="n">escape</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">raw_qrs</span> <span class="o">=</span> <span class="n">environ</span><span class="p">[</span><span class="s">&#39;MARIE_QRS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">escape</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -526,16 +516,27 @@ return &#8216;Jello %s&#8217; %name</dd>
 <h3>2.8.2. Properties (and Defaults)<a class="headerlink" href="#properties-and-defaults" title="Permalink to this headline">¶</a></h3>
 <p>Change these variables to set the way Marie handles certain situations. The defaults are shown.:</p>
 <div class="highlight-python"><pre>marie.content_type='text/html' Sets the default content type. Change to 'application/xhtml+xml' for xhtml
+
 marie.encoding = 'utf-8' Change the encoding. Just keep it Unicode, think of the children.
+
 marie.error_file = None  This is the full path to an error log file. This is important if you want to be able to read any information about errors that Marie catches.
+
 marie.salt = 'mariesalt' This is just a customizable salt for passwords and sessions. Change it as you please so not everyone's salt is the same.
+
 marie.secure_cookie=False Send session information via Secure Cookies. Requires HTTPS.
+
 marie.session_lease=60*60*24 Time to live set for each session after last request
+
 marie.user_db=0 This is the Redis database for user information
+
 marie.registration_db=1 This is the Redis database for registration information
+
 marie.session_db=2 This is the Redis database for session information
+
 marie.template_dirs = ['.'] List of directories for your templates.
+
 marie.template_bytecode_dir = None Location of temporary directory for saving precompiled versions of your templates
+
 marie.template_updates = True Checks to see if newer versions of the templates exist. Set False to improve speed, keep True for development.</pre>
 </div>
 </div>

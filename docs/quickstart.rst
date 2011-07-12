@@ -6,7 +6,7 @@
 Getting Started With Marie
 **************************
 
-Marie is a snap to set up and run. This document was created to get up up and running as quickly as possible.
+Marie is a snap to set up and run. This document was created to get up and running as quickly as possible.
 
 Installing Marie
 =================
@@ -92,7 +92,7 @@ Now if you visit "http://localhost/" you will see "Hello World". If you visit
 "http://localhost/Marie" it will respond with "Hello Marie" and
 "http://localhost/Marie/Howdy" will return "Howdy Marie". Finally if you are
 naughty and visit "`http://localhost/<script>alert("test")</script>`" you will
-be dissapointed.
+be disapointed.
 
 Now that you are done move on to the :doc:`manual </manual>` and learn about
 all the things that you can do with Marie.

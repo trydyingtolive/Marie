@@ -33,6 +33,7 @@ Routing
 Introduction
 ------------
 Let's jump right in with a quick hello world app. Create a new file we'll call it MyApp.py. Make sure that Marie is in the same directory with your new file. Add this code to MyApp.py: ::
+
     import marie
 
     def index():
@@ -74,9 +75,11 @@ Note: Exposed URL's should begin with a '/'. 'routing' would be incorrect, '/rou
 Debugging
 ---------
 You may have noticed already that, if you make a mistake and make a runtime error, Marie will catch it and present a non-descript error page.  This isn't very handy for figuring out what is wrong. In order to find out the error simply enable debugging when you expose a function. ::
+    
     def index():
         return IAmAnError
     marie.expose('/', index, debug=True)
+    
 If you run your code it will produce a full traceback and a dump of the environ. Be sure to remove the debug attribute before publishing your application as the traceback can cause security issues.
 
 Route Stacking
@@ -171,14 +174,14 @@ It is important to note again that the first argument will always be the environ
 MARIE_URL_ARGS
 ^^^^^^^^^^^^^^
 
-Sometimes you want to make sure that you get all of your URL arguments. This is where MARIE_URL_ARGS comes in. MARIE_URL_ARGS is a list of all the parts of the url that aren't part of the route used. In the example of our blog (/blog/page/1) MARIE_URL_ARGS would return ['page', '1']. Let's modify our above code to take a look at this
+Sometimes you want to make sure that you get all of your URL arguments. This is where MARIE_URL_ARGS comes in. MARIE_URL_ARGS is a list of all the parts of the url that aren't part of the route used. In the example of our blog (/blog/page/1) MARIE_URL_ARGS would return ['page', '1']. Let's modify our above code to take a look at this ::
 
-def blog(environ):
-    output="The URL  args are: <br>"
-    for arg in environ['MARIE_URL_ARGS']:
-        output+="<br>"
-        output+=arg
-    return output
+    def blog(environ):
+        output="The URL  args are: <br>"
+        for arg in environ['MARIE_URL_ARGS']:
+            output+="<br>"
+            output+=arg
+        return output
 marie.expose('/blog',blog, debug=True)
 
 This function simply iterates through environ['MARIE_URL_ARGS'] and adds it to a list. Now visit '/blog/item1/item2/a third item' and see what you get. Change the number of arguments and experiment. You can see how this would be a handy way of passing information to the server, but it isn't the only way. Marie automatically escapes all HTML from the URL arguments.
@@ -189,6 +192,7 @@ Form Data
 The MARIE_QRS and MARIE_BODY objects are a simple way of receiving the input of forms and other HTTP Requests. MARIE_QRS retrieves the information stored in the query string used by GETs. Input provided by a POST is located in MARIE_BODY. Retrieving the information within is as simple as calling the get([key]) method. Omitting a key will return a Python dictionary of all the data.
 
 MARIE_QRS.get([key]) and MARIE_BODY.get([key]) will return the values in three possible ways: as a string, a list, or a dictionary. Strings are returned for single value type elements such at text boxes and hidden fields. Lists are used when a key can have more than one value such as for a multi-select or checkboxes. A dictionary is used for file uploads. The dictionary contains two pairs: 'type' for the mime-type of the file and 'value' for the binary of the file. ::
+    
     def index(environ):
         name = environ['MARIE_QRS'].get('name') or 'World'
         return '''Hello %s
@@ -203,7 +207,7 @@ MARIE_QRS.get([key]) and MARIE_BODY.get([key]) will return the values in three p
         return 'Jello %s' %name
     marie.expose('/',p_index, 'POST', debug=True)
     
-Marie automatically escapes all of the HTML that may be in the form data. This helps protect your web application is protected against some XSS attacks. This might or might not be what want depending on what you are doing. Use the argument "escape=False" to access the unescaped input. ::
+Marie automatically escapes all of the HTML that may be in the form data. This helps protect your web application is protected against some XSS attacks. This might or might not be what want depending on what you are doing. Use the argument "escape=False" to access the un-escaped input. ::
 
     raw_input = environ['MARIE_BODY'].get('name',escape=False) 
     raw_qrs = environ['MARIE_QRS'].get(escape=False)
@@ -314,7 +318,7 @@ Switching to an internal route is as simple as creating one. Simply use ``marie.
     
     
     def index(environ, name=None):
-        if name=="Maire ":
+        if name=="Marie ":
             marie.reroute('we_know')
         else:
             return "Welcome! "
@@ -409,7 +413,7 @@ Let's make a quick application. Nothing fancy, just a way to show how to create 
 
     import marie
 
-Our app starts by importing the Marie Framework. Next we will make our index page for non authorized users. Folks who haven't logged in will see this function. It simply contains a form to log in and a link to make new users. ::
+Our app starts by importing the Marie Framework. Next we will make our index page for non-authorized users. Folks who haven't logged in will see this function. It simply contains a form to log in and a link to make new users. ::
 
     def non_auth():
         output = """
@@ -506,19 +510,30 @@ Part of the reason Marie is so simple is so that you can change it as you please
 Properties (and Defaults)
 ------------------------
 
-Change these variables to set the way Marie handles certain situations. The defaults are shown.::
+Change these variables to set the way Marie handles certain situations. The defaults are shown ::
 
     marie.content_type='text/html' Sets the default content type. Change to 'application/xhtml+xml' for xhtml
+    
     marie.encoding = 'utf-8' Change the encoding. Just keep it Unicode, think of the children.
+    
     marie.error_file = None  This is the full path to an error log file. This is important if you want to be able to read any information about errors that Marie catches.
+    
     marie.salt = 'mariesalt' This is just a customizable salt for passwords and sessions. Change it as you please so not everyone's salt is the same.
+    
     marie.secure_cookie=False Send session information via Secure Cookies. Requires HTTPS.
+    
     marie.session_lease=60*60*24 Time to live set for each session after last request
+    
     marie.user_db=0 This is the Redis database for user information
+    
     marie.registration_db=1 This is the Redis database for registration information
+    
     marie.session_db=2 This is the Redis database for session information
+    
     marie.template_dirs = ['.'] List of directories for your templates.
+    
     marie.template_bytecode_dir = None Location of temporary directory for saving precompiled versions of your templates
+    
     marie.template_updates = True Checks to see if newer versions of the templates exist. Set False to improve speed, keep True for development.
 
 Making Major Changes
