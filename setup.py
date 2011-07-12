@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 sdict = {
     'name' : 'Marie',
-    'version' : '1.0.1',
+    'version' : '1.0.2,
     'description' : 'A WSGI micro-framework for websites in Python',
     'long_description' : 'A WSGI micro-framework for websites in Python',
     'url': 'http://www.trydyingtolive.com/marie/',
