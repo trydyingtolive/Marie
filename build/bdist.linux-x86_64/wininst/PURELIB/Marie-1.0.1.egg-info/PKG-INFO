@@ -1,0 +1,17 @@
+Metadata-Version: 1.0
+Name: Marie
+Version: 1.0.1
+Summary: A WSGI micro-framework for websites in Python
+Home-page: http://www.trydyingtolive.com/marie/
+Author: Mark W. Lee
+Author-email: trydyingtolive
+License: GPLv3
+Description: A WSGI micro-framework for websites in Python
+Keywords: Marie,WSGI,micro,framework,Redis,Mako
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
