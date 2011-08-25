@@ -23,6 +23,7 @@ import inspect
 import hashlib
 import logging
 import traceback
+from cProfile import Profile
 from wsgiref.simple_server import make_server
 
 try:
@@ -41,10 +42,11 @@ except:
 try:
     from mako.lookup import TemplateLookup
     from mako import exceptions as mako_exceptions
+    lookup = TemplateLookup() ##Initialize Mako lookup object
 except:
     pass
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 
 
@@ -122,10 +124,9 @@ class application:
         try:
             self.output = route_function['function'](*args)
             if template:
-                lookup = TemplateLookup(directories=template_dirs,
-                                        output_encoding=encoding,
-                                        module_directory=template_bytecode_dir,
-                                        filesystem_checks=template_updates)
+                lookup.directories=template_dirs
+                lookup.output_encoding=encoding
+                lookup.filesystem_checks=template_updates
                 try:
                     tp_obj = lookup.get_template(template)
                     self.output=tp_obj.render(**self.output)

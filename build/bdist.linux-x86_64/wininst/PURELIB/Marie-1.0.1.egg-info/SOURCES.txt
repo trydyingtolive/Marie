@@ -1,8 +1,0 @@
-README
-setup.py
-Marie.egg-info/PKG-INFO
-Marie.egg-info/SOURCES.txt
-Marie.egg-info/dependency_links.txt
-Marie.egg-info/top_level.txt
-marie/__init__.py
-marie/marie.py
