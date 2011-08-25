@@ -10,8 +10,8 @@ Marie was designed to:
     Be modifiable - Make it run the way you want
 
 The 5 lines of Hello World
-    import marie def
-    index(environ, name="World"):
+    import marie 
+    def index(environ, name="World"):
         return "Hello %s" % name
     marie.expose('/', index)
     marie.run()
