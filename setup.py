@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 sdict = {
     'name' : 'Marie',
-    'version' : '1.0.3',
+    'version' : '1.0.5',
     'description' : 'A WSGI micro-framework for websites in Python',
     'long_description' : 'A WSGI micro-framework for websites in Python',
     'url': 'http://www.trydyingtolive.com/marie/',
@@ -14,7 +14,7 @@ sdict = {
     'maintainer_email' : 'trydyingtolive@gmail.com',
     'keywords' : ['Marie', 'WSGI', 'micro', 'framework', 'Redis', 'Mako'],
     'license' : 'GPLv3',
-    'packages' : find_packages(),
+    'py_modules': ['marie'],
     'classifiers' : [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
