@@ -11,7 +11,7 @@ sdict = {
     'author' : 'Mark W. Lee',
     'author_email' : 'trydyingtolive@gmail.com',
     'maintainer' : 'Mark W. Lee',
-    'maintainer_email' : 'trydyingtolive',
+    'maintainer_email' : 'trydyingtolive@gmail.com',
     'keywords' : ['Marie', 'WSGI', 'micro', 'framework', 'Redis', 'Mako'],
     'license' : 'GPLv3',
     'packages' : find_packages(),

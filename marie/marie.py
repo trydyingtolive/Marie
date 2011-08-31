@@ -32,10 +32,10 @@ except:
     Redis=None
     
 try:
-    import json
+    import simplejson as json
 except:
     try:
-        import simplejson as json
+        import json
     except:
         json=None
 
@@ -46,7 +46,7 @@ try:
 except:
     pass
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 
 
